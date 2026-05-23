@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>北京时间实时显示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #1a1a2e, #0f0f1a);
+            font-family: 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            color: #ffffff;
+            text-align: center;
+            user-select: none;
+        }
+        .title {
+            font-size: 2.2rem;
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            margin-bottom: 2rem;
+            opacity: 0.85;
+        }
+        .clock-box {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(12px);
+            padding: 2.5rem 4rem;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2);
+        }
+        #time {
+            font-size: 5.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.08em;
+            line-height: 1.2;
+        }
+        #date {
+            font-size: 1.8rem;
+            margin-top: 0.8rem;
+            font-weight: 300;
+            opacity: 0.9;
+            letter-spacing: 0.06em;
+        }
+        .footer {
+            position: fixed;
+            bottom: 24px;
+            font-size: 0.9rem;
+            opacity: 0.4;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">北京时间</div>
+    <div class="clock-box">
+        <div id="time">00:00:00</div>
+        <div id="date">2026年1月1日 星期四</div>
+    </div>
+    <div class="footer">UTC+8 实时同步</div>
+
+    <script>
+        // 获取北京时间（UTC+8）的 Date 对象
+        function getBeijingTime() {
+            const now = new Date();
+            // 当前时间的时间戳（毫秒）
+            const localTime = now.getTime();
+            // 本地时区偏移（分钟），转换为毫秒
+            const localOffset = now.getTimezoneOffset() * 60000;
+            // 对应的UTC时间戳
+            const utc = localTime + localOffset;
+            // UTC+8 的时间戳，并生成新的 Date 对象
+            return new Date(utc + 3600000 * 8);
+        }
+
+        // 更新显示
+        function updateDisplay() {
+            const bj = getBeijingTime();
+            const year = bj.getFullYear();
+            const month = bj.getMonth() + 1;
+            const day = bj.getDate();
+            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const weekday = weekdays[bj.getDay()];
+            const hours = bj.getHours().toString().padStart(2, '0');
+            const minutes = bj.getMinutes().toString().padStart(2, '0');
+            const seconds = bj.getSeconds().toString().padStart(2, '0');
+
+            document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}`;
+            document.getElementById('date').textContent = `${year}年${month}月${day}日 ${weekday}`;
+        }
+
+        // 立即更新一次，然后每秒更新
+        updateDisplay();
+        setInterval(updateDisplay, 1000);
+    </script>
+</body>
+</html>
